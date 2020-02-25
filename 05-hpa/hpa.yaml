@@ -1,0 +1,23 @@
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rabbitmq-consumer-scaling-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: rabbitmq-consumer-deployment
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Object
+    object:
+      metric:
+        name: rabbitmq_queue_messages
+      describedObject:
+        apiVersion: "/v1"
+        kind: Service
+        name: rabbitmq-management-service
+      target:
+        type: Value
+        value: 10
